@@ -1,17 +1,25 @@
 from .masks import get_mask_account, get_mask_card_number
 
 
-def mask_account_card(card_number: str) -> str:
+def mask_account_card(card_info: str) -> str:
     """
-    Функция проверяет счёт или номер карты на неё подан
-    И маскирует соответствующе реализации функций в masks.py
+    Функция проверяет счёт или номер карты на входе,
+    и маскирует соответствующее с использованием функций из masks.py
     """
-    number = "".join(filter(str.isdigit, card_number))
+
+    last_space_index = card_info.rfind(' ')
+    if last_space_index == -1:
+        raise ValueError("Неверный формат входной строки.")
+
+    card_type = card_info[:last_space_index]
+    number = card_info[last_space_index + 1:]
+
+    number = "".join(filter(str.isdigit, number))
 
     if len(number) in range(16, 20):
-        return get_mask_card_number(number)
+        return get_mask_card_number(card_type, number)
     elif len(number) >= 10:
-        return get_mask_account(number)
+        return get_mask_account(card_type, number)
     else:
         raise ValueError("Неизвестный тип номера.")
 
