@@ -7,12 +7,12 @@ def mask_account_card(card_info: str) -> str:
     и маскирует соответствующее с использованием функций из masks.py
     """
 
-    last_space_index = card_info.rfind(' ')
+    last_space_index = card_info.rfind(" ")
     if last_space_index == -1:
         raise ValueError("Неверный формат входной строки.")
 
     card_type = card_info[:last_space_index]
-    number = card_info[last_space_index + 1:]
+    number = card_info[last_space_index + 1 :]
 
     number = "".join(filter(str.isdigit, number))
 
