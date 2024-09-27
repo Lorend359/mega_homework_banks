@@ -14,11 +14,13 @@ def filter_by_state(list_of_dicts: Union[list[dict[str, int]]], state: str = "EX
 
     return sorted(filtered_dicts, key=lambda x: x["state"])
 
-result_filter_by_state = filter_by_state(dict_lists)
 
-
-
-
-def sort_by_date(list_of_dicts: Union[list[dict[str, int]]], sort: str = True) -> list[dict]:
+def sort_by_date(list_of_dicts: Union[list[dict[str, int]]], sort: bool = True) -> list[dict]:
     """Фильтр словарей по дате"""
-    pass
+    for i in list_of_dicts:
+        list_of_dicts.sort(key=lambda x: x["date"], reverse=sort)
+    return list_of_dicts
+
+
+result_filter_by_state = filter_by_state(dict_lists)
+result_sort_by_date = sort_by_date(dict_lists)
