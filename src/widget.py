@@ -9,7 +9,6 @@ def mask_account_card(card_info: str) -> str:
 
     last_space_index = card_info.rfind(" ")
 
-
     card_type = card_info[:last_space_index]
     number = card_info[last_space_index + 1 :]
 
@@ -19,7 +18,6 @@ def mask_account_card(card_info: str) -> str:
         return get_mask_card_number(card_type, number)
     elif len(number) >= 10:
         return get_mask_account(card_type, number)
-
 
 
 def get_date(date_string: str) -> str:
