@@ -15,8 +15,7 @@ def filter_by_state(list_of_dicts: list[dict], state: str = "EXECUTED") -> list[
 
 def sort_by_date(list_of_dicts: list[dict], sort: bool = True) -> list[dict]:
     """Фильтр словарей по дате"""
-    for i in list_of_dicts:
-        list_of_dicts.sort(key=lambda x: x["date"], reverse=sort)
+    list_of_dicts.sort(key=lambda x: x["date"], reverse=not sort)
     return list_of_dicts
 
 
