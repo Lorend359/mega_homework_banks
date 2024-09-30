@@ -1,5 +1,5 @@
 import pytest
-from src.masks import get_mask_card_number
+from src.masks import get_mask_card_number, get_mask_account
 
 @pytest.fixture
 def card_data():
@@ -28,3 +28,38 @@ def test_get_mask_card_number_empty():
 
 def test_get_mask_card_number_short():
     assert get_mask_card_number("Test Card", "1234") == "Test Card 1234 ** **** 1234"
+
+
+@pytest.fixture
+def account_data():
+    return [
+        ("Счет", "73654108430135874305"),
+        ("Счет", "1234567890123456"),
+        ("Счет", "987654321"),
+        ("Счет", "1"),
+        ("Счет", ""),
+    ]
+
+# Параметризованные тесты
+@pytest.mark.parametrize("account_type, account_number, expected", [
+    ("Счет", "73654108430135874305", "Счет **4305"),
+    ("Счет", "1234567890123456", "Счет **3456"),
+    ("Счет", "987654321", "Счет **4321"),
+    ("Счет", "1", "Счет **1"),  # даже если номер меньше 4 цифр
+])
+def test_get_mask_account(account_type, account_number, expected):
+    assert get_mask_account(account_type, account_number) == expected
+
+# Тест для проверки неправильного ввода
+def test_get_mask_account_invalid_input():
+    with pytest.raises(ValueError, match="Счет содержит недопустимые символы"):
+        get_mask_account("Счет", "abc")
+
+    with pytest.raises(ValueError, match="Счет содержит недопустимые символы"):
+        get_mask_account("Счет", "123abc")
+
+    with pytest.raises(ValueError, match="Счет содержит недопустимые символы"):
+        get_mask_account("Счет", "!@#$")
+
+    with pytest.raises(ValueError, match="Счет содержит недопустимые символы"):
+        get_mask_account("Счет", "")
