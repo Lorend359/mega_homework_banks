@@ -21,11 +21,21 @@ def mask_account_card(card_info: str) -> Any:
     elif len(number) >= 10:
         return get_mask_account(card_type, number)
 
+
 def get_date(date_string: str) -> str:
     """Функция, которая изменяет на классический формат даты"""
 
+    if not date_string:
+        raise ValueError("Input date string cannot be empty.")
+
+    if "T" not in date_string or len(date_string.split("T")) != 2:
+        raise ValueError("Invalid date format. Expected format: YYYY-MM-DDTHH:MM:SS")
+
     date_part = date_string.split("T")[0]
 
-    year, month, day = date_part.split("-")
+    try:
+        year, month, day = date_part.split("-")
+    except ValueError:
+        raise ValueError("Invalid date format. Expected format: YYYY-MM-DD")
 
     return f"{day}.{month}.{year}"
