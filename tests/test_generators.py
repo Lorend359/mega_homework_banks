@@ -204,7 +204,6 @@ def transactions_data():
                     "code": "RUB"
                 }
             },
-            # Описание отсутствует
             "from": "Счет 12345678901234567890",
             "to": "Счет 09876543210987654321"
         }
@@ -216,7 +215,7 @@ def transactions_data():
     ("Перевод со счета на счет", 2),
     ("Перевод с карты на карту", 3),
     ("Перевод организации", 4),
-    ("Нет описания", 5)  # С пустым описанием
+    ("Нет описания", 5)
 ])
 def test_transaction_descriptions(transactions_data, expected, index):
     transactions = transactions_data
