@@ -1,4 +1,4 @@
-from src.generators import filter_by_currency, transaction_descriptions
+from src.generators import filter_by_currency, transaction_descriptions, card_number_generator
 
 import pytest
 
@@ -223,3 +223,50 @@ def test_transaction_descriptions(transactions_data, expected, index):
     for i, description in enumerate(generator):
         if i == index:
             assert description == expected
+
+
+'''Тесты для card_number_generator'''
+@pytest.fixture
+def test_data():
+    return [
+        (1, 5, [
+            "0000 0000 0000 0001",
+            "0000 0000 0000 0002",
+            "0000 0000 0000 0003",
+            "0000 0000 0000 0004",
+            "0000 0000 0000 0005",
+        ]),
+        (10, 12, [
+            "0000 0000 0000 0010",
+            "0000 0000 0000 0011",
+            "0000 0000 0000 0012",
+        ]),
+        (0, 0, [
+            "0000 0000 0000 0000",
+        ]),
+    ]
+
+@pytest.mark.parametrize("start, end, expected", [
+    (1, 5, [
+        "0000 0000 0000 0001",
+        "0000 0000 0000 0002",
+        "0000 0000 0000 0003",
+        "0000 0000 0000 0004",
+        "0000 0000 0000 0005",
+    ]),
+    (10, 12, [
+        "0000 0000 0000 0010",
+        "0000 0000 0000 0011",
+        "0000 0000 0000 0012",
+    ]),
+    (0, 0, [
+        "0000 0000 0000 0000",
+    ]),
+])
+def test_card_number_generator(start, end, expected):
+    generated_numbers = list(card_number_generator(start, end))
+    assert generated_numbers == expected
+
+def test_card_number_generator_empty():
+    generated_numbers = list(card_number_generator(1, 0))
+    assert generated_numbers == []
