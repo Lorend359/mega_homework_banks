@@ -7,7 +7,6 @@ load_dotenv()
 
 API_KEY = os.getenv("EXCHANGE_API_KEY")
 
-
 def convert_to_rub(amount: float, currency: str) -> float:
     """Конвертация суммы в рубли с использованием внешнего API."""
 
@@ -24,6 +23,9 @@ def convert_to_rub(amount: float, currency: str) -> float:
         raise Exception("Error fetching data from the API")
 
     data = response.json()
+
     exchange_rate = data["rates"]["RUB"]
+    if not isinstance(exchange_rate, (float, int)):
+        raise ValueError("Exchange rate is not a number")
 
     return amount * exchange_rate

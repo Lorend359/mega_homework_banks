@@ -1,7 +1,11 @@
 import json
 from unittest.mock import mock_open, patch
 
-from src.utils import load_transactions
+import pytest
+
+from src.utils import get_transaction_amount, load_transactions
+
+""" Тесты для load_transactions"""
 
 
 @patch("os.path.exists")
@@ -50,3 +54,42 @@ def test_load_transactions_invalid_json(mock_open_func, mock_getsize, mock_exist
     mock_getsize.return_value = len(mock_open_func().read())
     result = load_transactions("invalid_json.json")
     assert result == []
+
+
+"""Тесты для get_transaction_amount"""
+
+
+def test_get_transaction_amount_rub():
+    transaction = {"amount": 1000, "currency": "RUB"}
+    result = get_transaction_amount(transaction)
+    assert result == 1000.0
+
+
+@patch("src.utils.convert_to_rub")
+def test_get_transaction_amount_usd(mock_convert):
+    transaction = {"amount": 100, "currency": "USD"}
+    mock_convert.return_value = 7000.0
+    result = get_transaction_amount(transaction)
+    assert result == 7000.0
+    mock_convert.assert_called_once_with(100, "USD")
+
+
+@patch("src.utils.convert_to_rub")
+def test_get_transaction_amount_eur(mock_convert):
+    transaction = {"amount": 100, "currency": "EUR"}
+    mock_convert.return_value = 8500.0
+    result = get_transaction_amount(transaction)
+    assert result == 8500.0
+    mock_convert.assert_called_once_with(100, "EUR")
+
+
+def test_get_transaction_amount_unsupported_currency():
+    transaction = {"amount": 100, "currency": "GBP"}
+    with pytest.raises(ValueError, match="Unsupported currency"):
+        get_transaction_amount(transaction)
+
+
+def test_get_transaction_amount_missing_currency():
+    transaction = {"amount": 100}
+    with pytest.raises(ValueError, match="Unsupported currency"):
+        get_transaction_amount(transaction)
