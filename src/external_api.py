@@ -7,6 +7,7 @@ load_dotenv()
 
 API_KEY = os.getenv("EXCHANGE_API_KEY")
 
+
 def convert_to_rub(amount: float, currency: str) -> float:
     """Конвертация суммы в рубли с использованием внешнего API."""
 
