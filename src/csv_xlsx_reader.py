@@ -1,26 +1,33 @@
+from typing import Any, Dict, List
+
 import pandas as pd
-from typing import List, Dict, Any
+
 
 def read_csv_transactions(file_path: str) -> List[Dict[Any, Any]]:
     """Функция для считывания финансовых операций из CSV."""
     try:
         df = pd.read_csv(file_path)
-        return df.to_dict(orient='records')
+        return df.to_dict(orient="records")
     except FileNotFoundError:
         print(f"Ошибка: файл не найден: {file_path}")
         return []
+
 
 def read_excel_transactions(file_path: str) -> List[Dict[Any, Any]]:
     """Функция для считывания финансовых операций из Excel."""
     try:
         df = pd.read_excel(file_path)
-        return df.to_dict(orient='records')
+        return df.to_dict(orient="records")
     except FileNotFoundError:
         print(f"Ошибка: файл не найден: {file_path}")
         return []
 
+
 # if __name__ == "__main__":
-#     ''' Вызовы для функции оставлю здесь, были написаны до тестов, будут закомментированы, что бы в отчёте была нормальная цифра покрытия'''
+#     '''
+#     Вызовы для функции оставлю здесь, были написаны до тестов,
+#     будут закомментированы, что бы в отчёте была нормальная цифра покрытия
+#     '''
 #     # Пример вызова для проверки CSV
 #     csv_file_path = 'files/transactions.csv'
 #     csv_transactions = read_csv_transactions(csv_file_path)
