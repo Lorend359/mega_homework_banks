@@ -1,4 +1,3 @@
-import pytest
 from src.transaction_processing import search_transactions, count_categories
 
 def test_search_transactions_no_matches():

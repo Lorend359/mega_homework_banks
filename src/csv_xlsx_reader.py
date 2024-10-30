@@ -6,7 +6,7 @@ import pandas as pd
 def read_csv_transactions(file_path: str) -> List[Dict[Any, Any]]:
     """Функция для считывания финансовых операций из CSV."""
     try:
-        df = pd.read_csv(file_path)
+        df = pd.read_csv(file_path, delimiter=";")
         return df.to_dict(orient="records")
     except FileNotFoundError:
         print(f"Ошибка: файл не найден: {file_path}")
