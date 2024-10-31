@@ -115,6 +115,8 @@ def main() -> None:
 
                 print(f"{masked_from} → {masked_to}")
                 print(f"Сумма: {amount} {currency_name}\n")
+        else:
+            print("Не найдено ни одной транзакции, подходящей под ваши условия фильтрации.")
 
 
 if __name__ == "__main__":
