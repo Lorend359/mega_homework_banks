@@ -1,10 +1,10 @@
 from src.csv_xlsx_reader import read_csv_transactions, read_excel_transactions
 from src.decorators import log
 from src.generators import filter_by_currency
-from src.masks import get_mask_account, get_mask_card_number
 from src.processing import filter_by_state, sort_by_date
 from src.transaction_processing import search_transactions
 from src.utils import load_transactions
+from src.widget import get_date, mask_account_card  # Импортируем нужные функции
 
 
 @log()
@@ -16,7 +16,6 @@ def main() -> None:
     print("3. Получить информацию о транзакциях из XLSX-файла")
 
     choice = input("Пользователь: ").strip()
-
     transactions = []
 
     if choice == "1":
@@ -49,7 +48,6 @@ def main() -> None:
         else:
             print(f'Статус операции "{status}" недоступен. Попробуйте еще раз.')
 
-    # Приведение генератора в список
     filtered_transactions = list(filter_by_state(transactions, status))
 
     if filtered_transactions:
@@ -66,7 +64,6 @@ def main() -> None:
                             .lower()
                         )
                         if order in {"по возрастанию", "по убыванию"}:
-                            # Сортировка и преобразование в список
                             filtered_transactions = list(
                                 sort_by_date(filtered_transactions, sort=(order != "по убыванию"))
                             )
@@ -87,38 +84,37 @@ def main() -> None:
             filtered_transactions = list(search_transactions(filtered_transactions, search_string))
 
         print("Распечатываю итоговый список транзакций...")
+
         if filtered_transactions:
             print(f"Всего банковских операций в выборке: {len(filtered_transactions)}")
-
             for transaction in filtered_transactions:
-                date = transaction.get("date")
+                date_str = transaction.get("date")
+                formatted_date = get_date(date_str) if date_str is not None else "Дата недоступна"
                 description = transaction.get("description")
-                amount = transaction.get("amount")
-                currency_name = transaction.get("currency_name")
-                from_ = transaction.get("from")
-                to = transaction.get("to")
 
-                print(f"{date} {description}")
+                amount = (
+                    transaction["operationAmount"].get("amount")
+                    if "operationAmount" in transaction
+                    else transaction.get("amount")
+                )
+                currency_name = (
+                    transaction["operationAmount"]["currency"].get("name")
+                    if "operationAmount" in transaction
+                    else transaction.get("currency_name")
+                )
 
-                if from_:
-                    if "счет" in str(from_):
-                        masked_from = get_mask_account("счет", str(from_))
-                    else:
-                        masked_from = get_mask_card_number("Visa", str(from_))
-                    print(masked_from, end=" ")
+                # Преобразуйте from_ и to, чтобы гарантировать, что они строки
+                from_ = str(transaction.get("from")) if transaction.get("from") is not None else None
+                to = str(transaction.get("to")) if transaction.get("to") is not None else None
 
-                print("→", end=" ")
+                print(f"{formatted_date} {description}")
 
-                if to:
-                    if "счет" in to:
-                        masked_to = get_mask_account("счет", to)
-                    else:
-                        masked_to = get_mask_card_number("Visa", to)
-                    print(masked_to)
+                # Маскировка данных
+                masked_from = mask_account_card(from_) if from_ else "→ Не указано"
+                masked_to = mask_account_card(to) if to else "→ Не указано"
 
+                print(f"{masked_from} → {masked_to}")
                 print(f"Сумма: {amount} {currency_name}\n")
-        else:
-            print("Не найдено ни одной транзакции, подходящей под ваши условия фильтрации.")
 
 
 if __name__ == "__main__":
