@@ -4,7 +4,7 @@ from src.generators import filter_by_currency
 from src.processing import filter_by_state, sort_by_date
 from src.transaction_processing import search_transactions
 from src.utils import load_transactions
-from src.widget import get_date, mask_account_card  # Импортируем нужные функции
+from src.widget import get_date, mask_account_card
 
 
 @log()
@@ -103,13 +103,13 @@ def main() -> None:
                     else transaction.get("currency_name")
                 )
 
-                # Преобразуйте from_ и to, чтобы гарантировать, что они строки
+
                 from_ = str(transaction.get("from")) if transaction.get("from") is not None else None
                 to = str(transaction.get("to")) if transaction.get("to") is not None else None
 
                 print(f"{formatted_date} {description}")
 
-                # Маскировка данных
+
                 masked_from = mask_account_card(from_) if from_ else "→ Не указано"
                 masked_to = mask_account_card(to) if to else "→ Не указано"
 
